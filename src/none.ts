@@ -1,5 +1,5 @@
-import { Optional } from './optional';
 import { none } from './functions';
+import { Optional } from './optional';
 
 export class None<T> extends Optional<T> {
   public exists(f: (value: T) => boolean): boolean {
@@ -28,6 +28,14 @@ export class None<T> extends Optional<T> {
 
   public orElse<S>(value: Optional<S>): Optional<S> {
     return value;
+  }
+
+  public orNull(): null {
+    return null;
+  }
+
+  public orUndefined(): undefined {
+    return undefined;
   }
 
   public isDefined(): boolean {

@@ -1,5 +1,5 @@
+import { none, optional } from './functions';
 import { Optional } from './optional';
-import { none, optional, some } from './functions';
 
 export class Some<T> extends Optional<T> {
   constructor(public readonly value: T) {
@@ -32,6 +32,14 @@ export class Some<T> extends Optional<T> {
 
   public orElse<S>(value: Optional<S>): Some<T> {
     return this;
+  }
+
+  public orNull(): T {
+    return this.value;
+  }
+
+  public orUndefined(): T {
+    return this.value;
   }
 
   public isDefined(): boolean {

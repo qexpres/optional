@@ -49,10 +49,16 @@ describe('A Some', () => {
     const someOne = new Some(1);
     expect(someOne.orElse(new Some({}))).toBe(someOne);
   });
-  it('should false for isDefined()', () => {
+  it('should return its own value for orNull()', () => {
+    expect(new Some(1).orNull()).toBe(1);
+  });
+  it('should return its own value for orUndefined()', () => {
+    expect(new Some(1).orUndefined()).toBe(1);
+  });
+  it('should return false for isDefined()', () => {
     expect(new Some(1).isDefined()).toBe(true);
   });
-  it('should true for isEmpty()', () => {
+  it('should return true for isEmpty()', () => {
     expect(new Some(1).isEmpty()).toBe(false);
   });
   it('should return execute the callback and wrap its result in an optional for map()', () => {

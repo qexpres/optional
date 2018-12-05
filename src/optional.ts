@@ -19,5 +19,9 @@ export abstract class Optional<T> {
 
   public abstract orElse<S>(value: Optional<S>): Optional<S | T>;
 
+  public abstract orNull(): T | null;
+
+  public abstract orUndefined(): T | undefined;
+
   public abstract toArray(): T[];
 }

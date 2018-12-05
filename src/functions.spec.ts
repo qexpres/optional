@@ -1,4 +1,4 @@
-import { none, optional, some, truthyOptional } from './functions';
+import { flatten, none, optional, some, truthyOptional } from './functions';
 import { None } from './none';
 import { Some } from './some';
 
@@ -83,5 +83,13 @@ describe('truthyOptional', () => {
     expect(truthyOptional('')).toBeInstanceOf(None);
     expect(truthyOptional(0)).toBeInstanceOf(None);
     expect(truthyOptional(NaN)).toBeInstanceOf(None);
+  });
+});
+
+describe('flatten', () => {
+  it('should return the array with the values of all Somes', () => {
+    expect(
+      flatten([some(1), some(2), none(), none(), some(4), optional(null), optional(undefined), some('kaas')]),
+    ).toEqual([1, 2, 4, 'kaas']);
   });
 });

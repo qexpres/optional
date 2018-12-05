@@ -33,10 +33,16 @@ describe('A None', () => {
     const a = none();
     expect(new None().orElse(a)).toBe(a);
   });
-  it('should false for isDefined()', () => {
+  it('should return null for orNull()', () => {
+    expect(new None().orNull()).toBeNull();
+  });
+  it('should return undefined for orUndefined()', () => {
+    expect(new None().orUndefined()).toBeUndefined();
+  });
+  it('should return false for isDefined()', () => {
     expect(new None().isDefined()).toBe(false);
   });
-  it('should true for isEmpty()', () => {
+  it('should return true for isEmpty()', () => {
     expect(new None().isEmpty()).toBe(true);
   });
   it('should return None for map()', () => {
