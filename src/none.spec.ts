@@ -1,7 +1,19 @@
+import { NoSuchElementException } from './no-such-element-exception';
 import { None } from './none';
-import { none } from './functions';
+import { Some } from './some';
 
 describe('A None', () => {
+  describe('equals()', () => {
+    it('should return true if the other optional is a None', () => {
+      const a = new None();
+      const b = new None();
+      expect(a.equals(a)).toBe(true);
+      expect(a.equals(b)).toBe(true);
+    });
+    it('should return false if the other optional is a Some', () => {
+      expect(new None().equals(new Some({}))).toBe(false);
+    });
+  });
   it('should return false for exists()', () => {
     const callback = jest.fn();
     expect(new None().exists(callback)).toBe(false);
@@ -23,18 +35,26 @@ describe('A None', () => {
     expect(callback).toHaveBeenCalledTimes(0);
   });
   it('should throw an Error for get()', () => {
-    expect(() => new None().get()).toThrow('Cannot get empty optional');
+    expect(() => new None().get()).toThrow(NoSuchElementException);
   });
-  it('should return the alternative value for getOrElse()', () => {
+  it("should return the alternative function's result for or()", () => {
+    const a = new Some({});
+    expect(new None().or(() => a)).toBe(a);
+  });
+  it('should return the alternative value for orElse()', () => {
     const a = {};
-    expect(new None().getOrElse(a)).toBe(a);
-  });
-  it('should return the alternative optional for orElse()', () => {
-    const a = none();
     expect(new None().orElse(a)).toBe(a);
+  });
+  it("should return the alternative function's result for orElseGet()", () => {
+    const a = {};
+    expect(new None().orElseGet(() => a)).toBe(a);
   });
   it('should return null for orNull()', () => {
     expect(new None().orNull()).toBeNull();
+  });
+  it('should throw an error for orThrow()', () => {
+    const e = new Error('Test error');
+    expect(() => new None().orThrow(() => e)).toThrow(e);
   });
   it('should return undefined for orUndefined()', () => {
     expect(new None().orUndefined()).toBeUndefined();
@@ -52,5 +72,8 @@ describe('A None', () => {
   });
   it('should return an empty array for toArray()', () => {
     expect(new None().toArray()).toEqual([]);
+  });
+  it('should return a string representation for toString()', () => {
+    expect(new None().toString()).toBe('None()');
   });
 });

@@ -1,7 +1,26 @@
-import { Some } from './some';
 import { None } from './none';
+import { Some } from './some';
 
 describe('A Some', () => {
+  describe('equals()', () => {
+    it('should return true if the other optional is a Some with the same value', () => {
+      const a = new Some(1);
+      const b = new Some(1);
+      expect(a.equals(a)).toBe(true);
+      expect(a.equals(b)).toBe(true);
+    });
+    it('should return true if the other optional is a Some with a different value', () => {
+      const a = new Some(1);
+      const b = new Some(2);
+      const c = new Some({ a: 1 });
+      const d = new Some({ a: 1 });
+      expect(a.equals(b)).toBe(false);
+      expect(c.equals(d)).toBe(false);
+    });
+    it('should return false if the other optional is a None', () => {
+      expect(new Some({}).equals(new None())).toBe(false);
+    });
+  });
   it('should return the return value of the executed callback for exists()', () => {
     expect(new Some(1).exists(_ => !!_)).toBe(true);
     expect(new Some(1).exists(_ => !_)).toBe(false);
@@ -21,7 +40,7 @@ describe('A Some', () => {
     expect(callback).toHaveBeenCalledTimes(1);
     expect(callback).toHaveBeenCalledWith(1);
   });
-  it("should return the callback's return value for flatMap()", () => {
+  it('should return the callback\'s return value for flatMap()', () => {
     const someOne = new Some(1);
     const returnNone = new None();
     expect(someOne.flatMap(_ => returnNone)).toBe(returnNone);
@@ -42,15 +61,23 @@ describe('A Some', () => {
   it('should return its own value for get()', () => {
     expect(new Some(1).get()).toBe(1);
   });
-  it('should return its own value for getOrElse()', () => {
-    expect(new Some(1).getOrElse({})).toBe(1);
+  it('should return itself for or()', () => {
+    const a = new Some({});
+    expect(a.or(() => new None())).toBe(a);
   });
-  it('should return itself for orElse()', () => {
-    const someOne = new Some(1);
-    expect(someOne.orElse(new Some({}))).toBe(someOne);
+  it('should its own value for orElse()', () => {
+    const a = {};
+    expect(new Some(a).orElse(2)).toBe(a);
+  });
+  it('should its own value for orElseGet()', () => {
+    const a = {};
+    expect(new Some(a).orElseGet(() => 2)).toBe(a);
   });
   it('should return its own value for orNull()', () => {
     expect(new Some(1).orNull()).toBe(1);
+  });
+  it('should return its own value for orThrow()', () => {
+    expect(new Some(1).orThrow()).toBe(1);
   });
   it('should return its own value for orUndefined()', () => {
     expect(new Some(1).orUndefined()).toBe(1);
@@ -72,5 +99,8 @@ describe('A Some', () => {
   });
   it('should return an array with only its own value for toArray()', () => {
     expect(new Some(1).toArray()).toEqual([1]);
+  });
+  it('should return an array with only its own value for toString()', () => {
+    expect(new Some(1).toString()).toEqual('Some(1)');
   });
 });

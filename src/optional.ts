@@ -1,27 +1,40 @@
-export abstract class Optional<T> {
-  public abstract exists(f: (value: T) => boolean): boolean;
+import { nil } from './nil';
+import { OptionalHelper } from './optional-helper';
 
-  public abstract filter(f: (value: T) => boolean): Optional<T>;
+export const Optional = OptionalHelper;
 
-  public abstract flatMap<S>(f: (value: T) => Optional<S>): Optional<S>;
+export interface Optional<T> {
+  equals<S>(other: Optional<S>): boolean;
 
-  public abstract forEach(f: (value: T) => any): void;
+  exists(f: (value: T) => boolean): boolean;
 
-  public abstract get(): T;
+  filter(f: (value: T) => boolean): Optional<T>;
 
-  public abstract getOrElse<S>(value: S): T | S;
+  flatMap<S>(f: (value: T) => Optional<S>): Optional<S>;
 
-  public abstract isDefined(): boolean;
+  forEach(f: (value: T) => any): void;
 
-  public abstract isEmpty(): boolean;
+  get(): T;
 
-  public abstract map<S>(f: (value: T) => S | null | undefined): Optional<S>;
+  isDefined(): boolean;
 
-  public abstract orElse<S>(value: Optional<S>): Optional<S | T>;
+  isEmpty(): boolean;
 
-  public abstract orNull(): T | null;
+  map<S>(f: (value: T) => S | nil): Optional<S>;
 
-  public abstract orUndefined(): T | undefined;
+  or(f: () => Optional<T>): Optional<T>;
 
-  public abstract toArray(): T[];
+  orElse(value: T): T;
+
+  orElseGet(f: () => T): T;
+
+  orNull(): T | null;
+
+  orThrow<E extends Error>(e: () => E): T;
+
+  orUndefined(): T | undefined;
+
+  toArray(): T[];
+
+  toString(): string;
 }

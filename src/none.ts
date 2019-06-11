@@ -1,7 +1,12 @@
-import { none } from './functions';
+import { NoSuchElementException } from './no-such-element-exception';
 import { Optional } from './optional';
+import { OptionalHelper } from './optional-helper';
 
-export class None<T> extends Optional<T> {
+export class None<T> implements Optional<T> {
+  public equals<S>(other: Optional<S>): boolean {
+    return other.isEmpty();
+  }
+
   public exists(f: (value: T) => boolean): boolean {
     return false;
   }
@@ -11,7 +16,7 @@ export class None<T> extends Optional<T> {
   }
 
   public flatMap<S>(f: (value: T) => Optional<S>): Optional<S> {
-    return none();
+    return OptionalHelper.empty();
   }
 
   public forEach(f: (value: T) => void): void {
@@ -19,19 +24,27 @@ export class None<T> extends Optional<T> {
   }
 
   public get(): T {
-    throw new Error('Cannot get empty optional');
+    throw new NoSuchElementException();
   }
 
-  public getOrElse<S>(value: S): S {
-    return value;
+  public or(f: () => Optional<T>): Optional<T> {
+    return f();
   }
 
-  public orElse<S>(value: Optional<S>): Optional<S> {
-    return value;
+  public orElse(other: T): T {
+    return other;
+  }
+
+  public orElseGet(f: () => T): T {
+    return f();
   }
 
   public orNull(): null {
     return null;
+  }
+
+  public orThrow<E extends Error>(e: () => E): never {
+    throw e();
   }
 
   public orUndefined(): undefined {
@@ -46,11 +59,15 @@ export class None<T> extends Optional<T> {
     return true;
   }
 
-  public map<S>(f: (value: T) => S | null | undefined): None<S> {
-    return none();
+  public map<S>(f: (value: T) => S | null | undefined): Optional<S> {
+    return OptionalHelper.empty();
   }
 
   public toArray(): T[] {
     return [];
+  }
+
+  public toString(): string {
+    return 'None()';
   }
 }
