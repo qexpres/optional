@@ -24,7 +24,7 @@ export class OptionalHelper {
    * In case of returning a None, it will always return the some instance.
    *
    * @see OptionalHelper.empty()
-   * @param value
+   * @param value the value to base the Optional on
    * @return the Optional
    */
   public static of<T>(value: T | nil): Optional<T> {
@@ -37,7 +37,7 @@ export class OptionalHelper {
    * In case of returning a None, it will always return the some instance.
    *
    * @see OptionalHelper.empty()
-   * @param value
+   * @param value the value to base the Optional on
    * @return the Optional
    */
   public static ofTruthy<T>(value: T | nil): Optional<T> {
