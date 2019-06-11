@@ -5,9 +5,10 @@
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
-    "build": "tsc",
+    "build": "rm -rf dist && tsc -p .",
     "format": "prettier --write \"src/**/*.ts\"",
     "lint": "tslint -p tsconfig.json -c tslint.json",
+    "prepare": "npm run build",
     "test": "jest",
     "test:watch": "jest --watch",
     "test:cov": "jest --coverage",
@@ -19,6 +20,9 @@
   },
   "author": "Jasper Boot",
   "license": "ISC",
+  "files": [
+    "dist/*"
+  ],
   "devDependencies": {
     "@types/jest": "^23.3.14",
     "@types/node": "^10.14.8",
