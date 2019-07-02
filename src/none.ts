@@ -1,6 +1,5 @@
 import { NoSuchElementException } from './no-such-element-exception';
 import { Optional } from './optional';
-import { OptionalHelper } from './optional-helper';
 
 export class None<T> implements Optional<T> {
   public equals<S>(other: Optional<S>): boolean {
@@ -16,7 +15,7 @@ export class None<T> implements Optional<T> {
   }
 
   public flatMap<S>(f: (value: T) => Optional<S>): Optional<S> {
-    return OptionalHelper.empty();
+    return Optional.empty();
   }
 
   public forEach(f: (value: T) => void): void {
@@ -60,7 +59,7 @@ export class None<T> implements Optional<T> {
   }
 
   public map<S>(f: (value: T) => S | null | undefined): Optional<S> {
-    return OptionalHelper.empty();
+    return Optional.empty();
   }
 
   public toArray(): T[] {

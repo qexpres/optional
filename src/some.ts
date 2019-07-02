@@ -1,8 +1,8 @@
 import { Optional } from './optional';
-import { OptionalHelper } from './optional-helper';
 
 export class Some<T> implements Optional<T> {
-  constructor(public readonly value: T) {}
+  constructor(public readonly value: T) {
+  }
 
   public equals<S>(other: Optional<S & T>): boolean {
     return other.isDefined() && other.get() === this.value;
@@ -13,7 +13,7 @@ export class Some<T> implements Optional<T> {
   }
 
   public filter(f: (value: T) => boolean): Optional<T> {
-    return this.exists(f) ? this : OptionalHelper.empty();
+    return this.exists(f) ? this : Optional.empty();
   }
 
   public flatMap<S>(f: (value: T) => Optional<S>): Optional<S> {
@@ -61,7 +61,7 @@ export class Some<T> implements Optional<T> {
   }
 
   public map<S>(f: (value: T) => S | null | undefined): Optional<S> {
-    return OptionalHelper.of(f(this.value));
+    return Optional.of(f(this.value));
   }
 
   public toArray(): T[] {
