@@ -3,6 +3,14 @@ import { None } from './none';
 import { Some } from './some';
 
 describe('A None', () => {
+  it('should never run a for loop', () => {
+    let i = 0;
+    for (const val of new None()) {
+      i++;
+      fail('None returned value = ' + val);
+    }
+    expect(i).toBe(0);
+  });
   describe('equals()', () => {
     it('should return true if the other optional is a None', () => {
       const a = new None();
@@ -69,6 +77,15 @@ describe('A None', () => {
     const callback = jest.fn();
     expect(new None().map(callback)).toBeInstanceOf(None);
     expect(callback).toHaveBeenCalledTimes(0);
+  });
+  it('should never use the tap() callback', () => {
+    const callback = jest.fn();
+    new None().tap(callback);
+    expect(callback).toHaveBeenCalledTimes(0);
+  });
+  it('should return itself for tap()', () => {
+    const none = new None();
+    expect(none.tap(() => {})).toBe(none);
   });
   it('should return an empty array for toArray()', () => {
     expect(new None().toArray()).toEqual([]);

@@ -2,6 +2,14 @@ import { None } from './none';
 import { Some } from './some';
 
 describe('A Some', () => {
+  it('should never run a for loop', () => {
+    let i = 0;
+    for (const val of new Some(1)) {
+      i++;
+      expect(val).toBe(1);
+    }
+    expect(i).toBe(1);
+  });
   describe('equals()', () => {
     it('should return true if the other optional is a Some with the same value', () => {
       const a = new Some(1);
@@ -40,7 +48,7 @@ describe('A Some', () => {
     expect(callback).toHaveBeenCalledTimes(1);
     expect(callback).toHaveBeenCalledWith(1);
   });
-  it('should return the callback\'s return value for flatMap()', () => {
+  it("should return the callback's return value for flatMap()", () => {
     const someOne = new Some(1);
     const returnNone = new None();
     expect(someOne.flatMap(_ => returnNone)).toBe(returnNone);
@@ -96,6 +104,16 @@ describe('A Some', () => {
     new Some(1).map(callback);
     expect(callback).toHaveBeenCalledTimes(1);
     expect(callback).toHaveBeenCalledWith(1);
+  });
+  it('should always use the tap() callback', () => {
+    const callback = jest.fn();
+    new Some(1).tap(callback);
+    expect(callback).toHaveBeenCalledTimes(1);
+    expect(callback).toHaveBeenCalledWith(1);
+  });
+  it('should return itself for tap()', () => {
+    const some = new Some(1);
+    expect(some.tap(() => {})).toBe(some);
   });
   it('should return an array with only its own value for toArray()', () => {
     expect(new Some(1).toArray()).toEqual([1]);
