@@ -21,7 +21,8 @@
   "author": "Jasper Boot",
   "license": "ISC",
   "files": [
-    "dist/*"
+    "dist/**/*.js",
+    "dist/**/*.d.ts"
   ],
   "devDependencies": {
     "@types/jest": "^23.3.14",

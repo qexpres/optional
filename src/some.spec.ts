@@ -40,7 +40,7 @@ describe('A Some', () => {
     expect(callback).toHaveBeenCalledTimes(1);
     expect(callback).toHaveBeenCalledWith(1);
   });
-  it('should return the callback\'s return value for flatMap()', () => {
+  it("should return the callback's return value for flatMap()", () => {
     const someOne = new Some(1);
     const returnNone = new None();
     expect(someOne.flatMap(_ => returnNone)).toBe(returnNone);
@@ -77,7 +77,8 @@ describe('A Some', () => {
     expect(new Some(1).orNull()).toBe(1);
   });
   it('should return its own value for orThrow()', () => {
-    expect(new Some(1).orThrow()).toBe(1);
+    expect(new Some(1).orThrow(() => new Error())).toBe(1);
+    expect(new Some(1).orThrow(Error)).toBe(1);
   });
   it('should return its own value for orUndefined()', () => {
     expect(new Some(1).orUndefined()).toBe(1);

@@ -55,6 +55,7 @@ describe('A None', () => {
   it('should throw an error for orThrow()', () => {
     const e = new Error('Test error');
     expect(() => new None().orThrow(() => e)).toThrow(e);
+    expect(() => new None().orThrow(Error)).toThrow(Error);
   });
   it('should return undefined for orUndefined()', () => {
     expect(new None().orUndefined()).toBeUndefined();

@@ -1,145 +1,154 @@
-import { nil } from './nil';
+import { NoSuchElementException } from './no-such-element-exception';
 import { None } from './none';
 import { Some } from './some';
 
-export class Optional<T> {
-  private static _empty: Optional<any>;
+export abstract class Optional<T> {
+  public static none: Optional<any>;
+  public static resolver: <S>(value: S | undefined | null) => Optional<S>;
 
-  /**
-   * Simply returns a None. This method will always return the same instance. You should never check for equality using
-   * the === operator. Use methods like isEmpty() or equals() instead.
-   * @return the None
-   */
-  public static empty<T>(): Optional<T> {
-    if (typeof Optional._empty === 'undefined') {
-      Optional._empty = new None();
-    }
-    return Optional._empty;
+  public static empty<S>(): Optional<S> {
+    return Optional.none;
+  }
+
+  public static of<S>(value: S | undefined | null): Optional<S> {
+    return Optional.resolver(value);
+  }
+
+  public static ofTruthy<S>(value: S | undefined | null | false): Optional<S> {
+    return Optional.of(value || null);
   }
 
   /**
-   * Validates whether the given value is defined or not and returns an Optional. Returns a None if the value is null or
-   * undefined; otherwise returns a Some of the given value.
-   * In case of returning a None, it will always return the some instance.
-   *
-   * @see Optional.empty()
-   * @param value the value to base the Optional on
-   * @return the Optional
+   * If the value is present, and it matches the given value, return true; otherwise return false.
+   * @param value the value
+   * @return true if the value is present and matches the given value; otherwise false
    */
-  public static of<T>(value: T | nil): Optional<T> {
-    return value === null || typeof value === 'undefined' ? Optional.empty() : new Some(value);
-  }
+  public abstract contains(value: any): boolean;
 
-  /**
-   * Validates whether the given value is truthy and returns an Optional. Returns a None if the value evaluates to
-   * false; otherwise returns a Some of the given value.
-   * In case of returning a None, it will always return the some instance.
-   *
-   * @see Optional.empty()
-   * @param value the value to base the Optional on
-   * @return the Optional
-   */
-  public static ofTruthy<T>(value: T | nil): Optional<T> {
-    return value ? new Some(value) : Optional.empty();
-  }
-}
-
-
-export interface Optional<T> {
   /**
    * Checks if the given Optional for equality. Two Optionals are equal if they are both empty or if they both contain
    * the same value.
    * @param other the optional to compare with
    * @return true if they are equal; otherwise false
    */
-  equals<S>(other: Optional<S>): boolean;
+  public abstract equals<S>(other: Optional<S>): boolean;
 
   /**
    * If the value is present, and it matches the given predicate, return true; otherwise return false.
    * @param predicate the predicate
+   * @return true if the value is present and matches the given predicate; otherwise false
    */
-  exists(predicate: (value: T) => boolean): boolean;
+  public abstract exists(predicate: (value: T) => boolean): boolean;
 
   /**
    * If the value is present, and it matches the given predicate, return an Optional containing this value; otherwise
    * return an empty Optional.
    * @param predicate the predicate
-   * TODO: @return
+   * @return an Optional with this value if the value is present and matches the given predicate; otherwise an empty
+   * Optional
    */
-  filter(predicate: (value: T) => boolean): Optional<T>;
+  public abstract filter(predicate: (value: T) => boolean): Optional<T>;
 
   /**
    * If the value is present, apply the mapper function to it, and return the Optional that it produces. Otherwise
    * return an empty Optional.
    * @param mapper the mapper function
-   * TODO: @return
+   * @return the Optional that the mapper produces; otherwise an empty Optional
    */
-  flatMap<S>(mapper: (value: T) => Optional<S>): Optional<S>;
+  public abstract flatMap<S>(mapper: (value: T) => Optional<S>): Optional<S>;
 
   /**
    * If the value is present, invoke the consumer function, otherwise do nothing.
    * @param consumer the consumer function
-   * TODO: @return
    */
-  forEach(consumer: (value: T) => any): void;
+  public abstract forEach(consumer: (value: T) => any): void;
 
   /**
    * TODO: docs
    */
-  get(): T;
+  public abstract isDefined(): boolean;
+
+  /**
+   * If the value is present, apply the mapper function to it, and return an Optional based on the value that it
+   * produces. Otherwise return an empty Optional. The mapper's result will be evaluated and null and undefined result
+   * in an empty Optional.
+   * @param mapper the mapper function
+   * @return an Optional based on the value that the mapper produces; otherwise an empty Optional
+   */
+  public abstract map<S>(mapper: (value: T) => S | undefined | null): Optional<S>;
 
   /**
    * TODO: docs
    */
-  isDefined(): boolean;
+  public abstract or<S>(supplier: () => Optional<S>): Optional<S | T>;
 
   /**
    * TODO: docs
    */
-  isEmpty(): boolean;
+  public abstract orElse<S>(value: S): S | T;
 
   /**
    * TODO: docs
    */
-  map<S>(f: (value: T) => S | nil): Optional<S>;
+  public abstract orElseGet<S>(supplier: () => S): S | T;
 
   /**
    * TODO: docs
    */
-  or(f: () => Optional<T>): Optional<T>;
+  public abstract orThrow<E extends Error>(thrower: () => E): T;
 
   /**
    * TODO: docs
    */
-  orElse(value: T): T;
+  public abstract toArray(): T[];
 
   /**
    * TODO: docs
    */
-  orElseGet(f: () => T): T;
+  public abstract toString(): string;
+
+  public [Symbol.iterator](): IterableIterator<T> {
+    return this.toArray().values();
+  }
 
   /**
    * TODO: docs
    */
-  orNull(): T | null;
+  public get(): T {
+    return this.orThrow(() => new NoSuchElementException());
+  }
 
   /**
    * TODO: docs
    */
-  orThrow<E extends Error>(e: () => E): T;
+  public isEmpty(): boolean {
+    return !this.isDefined();
+  }
+
+  /**
+   * Similar to forEach(), if the value is present, invoke the consumer function, otherwise do nothing. Returns this
+   * Optional for chaining purposes.
+   * @param consumer the consumer function
+   */
+  public tap(consumer: (value: T) => any): Optional<T> {
+    this.forEach(consumer);
+    return this;
+  }
 
   /**
    * TODO: docs
    */
-  orUndefined(): T | undefined;
+  public orNull(): T | null {
+    return this.orElse(null);
+  }
 
   /**
    * TODO: docs
    */
-  toArray(): T[];
-
-  /**
-   * TODO: docs
-   */
-  toString(): string;
+  public orUndefined(): T | undefined {
+    return this.orElse(undefined);
+  }
 }
+
+Optional.none = new None();
+Optional.resolver = value => (value === null || typeof value === 'undefined' ? Optional.empty() : new Some(value));

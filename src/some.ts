@@ -1,67 +1,56 @@
 import { Optional } from './optional';
 
-export class Some<T> implements Optional<T> {
-  constructor(public readonly value: T) {
+export class Some<T> extends Optional<T> {
+  public constructor(public readonly value: T) {
+    super();
+  }
+
+  public contains(value: any): boolean {
+    return this.value === value;
   }
 
   public equals<S>(other: Optional<S & T>): boolean {
-    return other.isDefined() && other.get() === this.value;
+    return other.contains(this.value);
   }
 
-  public exists(f: (value: T) => boolean): boolean {
-    return f(this.value);
+  public exists(predicate: (value: T) => boolean): boolean {
+    return predicate(this.value);
   }
 
-  public filter(f: (value: T) => boolean): Optional<T> {
-    return this.exists(f) ? this : Optional.empty();
+  public filter(predicate: (value: T) => boolean): Optional<T> {
+    return Optional.ofTruthy(this.exists(predicate) && this.value);
   }
 
-  public flatMap<S>(f: (value: T) => Optional<S>): Optional<S> {
-    return f(this.value);
+  public flatMap<S>(mapper: (value: T) => Optional<S>): Optional<S> {
+    return mapper(this.value);
   }
 
-  public forEach(f: (value: T) => void): void {
-    f(this.value);
-  }
-
-  public get(): T {
-    return this.value;
-  }
-
-  public or(f: () => Optional<T>): Optional<T> {
-    return this;
-  }
-
-  public orElse(value: T): T {
-    return this.value;
-  }
-
-  public orElseGet(f: () => T): T {
-    return this.value;
-  }
-
-  public orNull(): T {
-    return this.value;
-  }
-
-  public orThrow(): T {
-    return this.value;
-  }
-
-  public orUndefined(): T {
-    return this.value;
+  public forEach(consumer: (value: T) => any): void {
+    consumer(this.value);
   }
 
   public isDefined(): boolean {
     return true;
   }
 
-  public isEmpty(): boolean {
-    return false;
+  public or<S>(supplier: () => Optional<S>): Optional<S | T> {
+    return this;
   }
 
-  public map<S>(f: (value: T) => S | null | undefined): Optional<S> {
-    return Optional.of(f(this.value));
+  public orElse<S>(value: S): S | T {
+    return this.value;
+  }
+
+  public orElseGet<S>(supplier: () => S): S | T {
+    return this.value;
+  }
+
+  public orThrow<E extends Error>(thrower: () => E): T {
+    return this.value;
+  }
+
+  public map<S>(mapper: (value: T) => S | null | undefined): Optional<S> {
+    return Optional.of(mapper(this.value));
   }
 
   public toArray(): T[] {
