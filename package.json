@@ -25,15 +25,15 @@
   ],
   "devDependencies": {
     "@types/jest": "^23.3.14",
-    "@types/node": "^10.14.12",
-    "jest": "^24.8.0",
-    "prettier": "^1.18.2",
-    "source-map-support": "^0.5.12",
-    "ts-jest": "^24.0.2",
-    "tsconfig-paths": "^3.8.0",
-    "tslint": "^5.18.0",
+    "@types/node": "^10.17.17",
+    "jest": "^24.9.0",
+    "prettier": "^1.19.1",
+    "source-map-support": "^0.5.16",
+    "ts-jest": "^24.3.0",
+    "tsconfig-paths": "^3.9.0",
+    "tslint": "^5.20.1",
     "tslint-config-prettier": "^1.18.0",
-    "typescript": "^3.5.3"
+    "typescript": "^3.8.3"
   },
   "jest": {
     "moduleFileExtensions": [
